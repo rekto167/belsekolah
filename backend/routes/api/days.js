@@ -44,6 +44,19 @@ router.post('/', [
     }
 })
 
+// @router  GET api/days
+// @desc    Get all day
+// @access  Public
+router.get('/', async(req, res) => {
+    try {
+        const days = await Days.find();
+        res.json(days);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 // @router  DELETE api/days
 // @desc    Delete day
 // @access  Public
