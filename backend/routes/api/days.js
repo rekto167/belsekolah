@@ -44,4 +44,19 @@ router.post('/', [
     }
 })
 
+// @router  DELETE api/days
+// @desc    Delete day
+// @access  Public
+router.delete('/:id', async(req, res) => {
+    try {
+        const day = await Days.findById(req.params.id);
+        await day.remove();
+
+        res.json({msg: 'Day was deleted'});
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;
