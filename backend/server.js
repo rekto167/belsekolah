@@ -1,16 +1,20 @@
 const express = require('express');
 const connectDB = require('./config/db');
+const expressBusboy = require('express-busboy');
 const app = express();
 
 //Connecting to database
 connectDB();
 
+// Initial middleware
+// expressBusboy.extend(app)
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 app.get('/', (req, res)=>{
     res.send('Server is running');
 });
 
-// Initial middleware
-app.use(express.json({extend: true}));
 
 // Define routing
 app.use('/api/days', require('./routes/api/days'));
