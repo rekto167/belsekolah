@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 const { check, validationResult } = require('express-validator');
+const fs = require('fs');
 
 const Bells = require('../../models/Bells');
 
@@ -80,5 +81,29 @@ router.get('/:id', async(req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+// @router  PUT /api/bells/:id
+// @desc    Edit bell by id
+// @access  public
+// router.put('/')
+
+// @router  DELETE /api/bells/:id
+// @desc    Delete bell
+// @access  public
+router.delete('/:id', async(req, res) => {
+    try {
+        const bell = await Bells.findById(req.params.id);
+        fs.unlink(bell.file, (err) => {
+            if(err){
+                return res.status(400).json({msg: err});
+            }
+        })
+        await bell.remove();
+        res.json({msg: 'Deleted successfully'});
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+})
 
 module.exports = router;
