@@ -18,7 +18,12 @@ const Bells = require('../../models/Bells');
 // @desc    Add bells
 // @access  public
 
-router.post('/', upload.single('file'), [
+router.post('/', upload.single('file'),  (req, res, next) => {
+    if(req.file == undefined){
+        return res.status(400).send({msg: 'Please upload a file'});
+    }
+    next();
+},[
     check('name', 'Name is required').notEmpty()
 ], async(req, res) => {
     const errors = validationResult(req);
@@ -29,6 +34,10 @@ router.post('/', upload.single('file'), [
     const {name, file} = req.body;
 
     try {
+        const bell = await Bells.findOne({name, file: req.file.path});
+        if(bell){
+            return res.status(409).json({msg: 'Bell already exists'});
+        }
         const addBell = new Bells({
             name: name,
             file: req.file.path
