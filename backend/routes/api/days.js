@@ -72,4 +72,22 @@ router.delete('/:id', async(req, res) => {
     }
 });
 
+// @router  PUT api/days
+// @desc    Edit day
+// @access  Public
+router.put('/:id', async(req, res)=> {
+    try {
+        const day = await Days.findById(req.params.id);
+        day.name = req.body.name;
+        await day.save();
+        res.json({
+            msg: 'Data updated successfully',
+            data: day
+        })
+    } catch (err) {
+        console.error(err.message);
+        res.status(500)
+    }
+});
+
 module.exports = router;
