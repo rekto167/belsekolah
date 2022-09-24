@@ -68,4 +68,17 @@ router.get('/', async(req, res) => {
     }
 });
 
+// @router  GET /api/bells/:id
+// @desc    Get bell by id
+// @access  public
+router.get('/:id', async(req, res) => {
+    try {
+        const bell = await Bells.findById(req.params.id);
+        res.json(bell);
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;
