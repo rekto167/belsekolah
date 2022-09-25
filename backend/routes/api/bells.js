@@ -85,7 +85,40 @@ router.get('/:id', async(req, res) => {
 // @router  PUT /api/bells/:id
 // @desc    Edit bell by id
 // @access  public
-// router.put('/')
+router.put('/:id', upload.single('file'), async (req, res) => {
+
+    try {
+        const bell = await Bells.findById(req.params.id);
+        //Check if name is not same with value before
+        if(bell.name !== req.body.name){
+            bell.name = req.body.name;
+        }
+
+        //Check if file is uploaded in update form
+        if(req.file){
+            //Check if file data before and current is not equal
+            if(bell.file !== req.file.path){
+                //if not equal delete file it
+                fs.unlink(bell.file, (err) => {
+                    if(err){
+                        return res.status(400).json({msg: err});
+                    }
+                });
+
+                //and set file with current path file
+                bell.file = req.file.path;
+            }
+        }
+
+        //save all changed value
+        await bell.save();
+
+        res.json(bell);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
 
 // @router  DELETE /api/bells/:id
 // @desc    Delete bell
