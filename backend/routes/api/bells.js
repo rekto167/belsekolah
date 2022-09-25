@@ -146,11 +146,13 @@ router.delete('/', async(req, res) => {
    try {
        const bells = await Bells.find();
        bells.forEach(async(item, index) => {
+           //Delete file first
            fs.unlink(item.file, (err) => {
               if(err){
                   return res.status(400).json({msg: err});
               }
            });
+           //next remove from database
            await item.remove();
        })
        res.json({msg: 'Delete all bell successfully'});
