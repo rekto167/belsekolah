@@ -139,4 +139,25 @@ router.delete('/:id', async(req, res) => {
     }
 })
 
+// @router  DELETE /api/bells
+// @desc    Delete all bell
+// @access  public
+router.delete('/', async(req, res) => {
+   try {
+       const bells = await Bells.find();
+       bells.forEach(async(item, index) => {
+           fs.unlink(item.file, (err) => {
+              if(err){
+                  return res.status(400).json({msg: err});
+              }
+           });
+           await item.remove();
+       })
+       res.json({msg: 'Delete all bell successfully'});
+   } catch (err){
+       consol.error(err.message);
+       res.status(500).send('Server error');
+   }
+});
+
 module.exports = router;
